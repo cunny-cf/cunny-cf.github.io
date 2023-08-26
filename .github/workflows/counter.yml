@@ -1,0 +1,25 @@
+name: Update Visitor Count
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch name
+
+jobs:
+  update-counter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Update Visitor Count
+        run: |
+          current_count=$(curl -s https://gist.githubusercontent.com/cunny-cf/cc2619eb0716913e8f60f467eaf04676/raw/visitor_count.txt)
+          updated_count=$((current_count + 1))
+          echo $updated_count > visitor_count.txt
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add visitor_count.txt
+          git commit -m "Update visitor count [skip ci]"
+          git push origin main
